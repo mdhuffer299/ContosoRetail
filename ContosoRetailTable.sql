@@ -26,6 +26,61 @@ CREATE TABLE ContosoRetailDW.dbo.ProductRulesData
 	,ProductTen NVARCHAR(500)
 )
 
+--Tables for Decision Tree Regression Model
+CREATE TABLE ContosoRetailDW.dbo.RetailInventoryData
+(
+	InventoryKey INT NOT NULL
+	,StoreKey INT NOT NULL
+	,ProductKey INT NOT NULL
+	,ProductSubcategoryKey INT NOT NULL
+	,Datekey DATETIME NOT NULL
+	,GeographyKey INT NOT NULL
+	,OnHandQuantity INT 
+	,OnOrderQuantity INT
+	,SafetyStockQuantity INT
+	,UnitCost MONEY
+	,DaysInStock INT
+	,MinDayInStock INT
+	,MaxDayInStock INT
+	,StoreType NVARCHAR(15)
+	,StoreName NVARCHAR(100)
+	,StoreDescription NVARCHAR(300)
+	,ZipCode NVARCHAR(20)
+	,AddressLine1 NVARCHAR(100)
+	,AddressLine2 NVARCHAR(100)
+	,ProductName NVARCHAR(500)
+	,ProductDescription NVARCHAR(400)
+	,Manufacturer NVARCHAR(50)
+	,BrandName NVARCHAR(50)
+	,ClassName NVARCHAR(20)
+	,ColorName NVARCHAR(20)
+	,UnitPrice MONEY
+	,ProductSubcategoryName NVARCHAR(50)
+	,ProductSubcategoryDescription NVARCHAR(100)
+	,FullDateLabel NVARCHAR(20)
+	,CalendarYear INT
+	,CalendarQuarterLabel NVARCHAR(20)
+	,CalendarMonthLabel NVARCHAR(20)
+	,CalendarWeekLabel NVARCHAR(20)
+	,CalendarDayOfWeekLabel NVARCHAR(10)
+	,IsHoliday INT
+	,HolidayName NVARCHAR(20)
+	,NorthAmericaSeason NVARCHAR(50)
+	,CityName NVARCHAR(100)
+	,StateProvinceName NVARCHAR(100)
+	,RegionCountryName NVARCHAR(100)
+	,ContinentName NVARCHAR(50)
+)
+
+
+CREATE TABLE ContosoRetailDW.dbo.Models
+(
+	ModelID INT IDENTITY(1,1) NOT NULL 
+	,ModelName VARCHAR(100) NOT NULL DEFAULT('Default Model')
+	,Model VARBINARY(MAX) NOT NULL
+	,DateCreated DATETIME DEFAULT GETDATE()
+);
+
 
 
 
@@ -89,55 +144,4 @@ CREATE TABLE ContosoRetailDW.dbo.RetailSalesData
 	,PromotionCategory NVARCHAR(50)
 )
 
-CREATE TABLE ContosoRetailDW.dbo.RetailInventoryData
-(
-	InventoryKey INT NOT NULL
-	,StoreKey INT NOT NULL
-	,ProductKey INT NOT NULL
-	,ProductSubcategoryKey INT NOT NULL
-	,Datekey DATETIME NOT NULL
-	,GeographyKey INT NOT NULL
-	,OnHandQuantity INT 
-	,OnOrderQuantity INT
-	,SafetyStockQuantity INT
-	,UnitCost MONEY
-	,DaysInStock INT
-	,MinDayInStock INT
-	,MaxDayInStock INT
-	,StoreType NVARCHAR(15)
-	,StoreName NVARCHAR(100)
-	,StoreDescription NVARCHAR(300)
-	,ZipCode NVARCHAR(20)
-	,AddressLine1 NVARCHAR(100)
-	,AddressLine2 NVARCHAR(100)
-	,ProductName NVARCHAR(500)
-	,ProductDescription NVARCHAR(400)
-	,Manufacturer NVARCHAR(50)
-	,BrandName NVARCHAR(50)
-	,ClassName NVARCHAR(20)
-	,ColorName NVARCHAR(20)
-	,UnitPrice MONEY
-	,ProductSubcategoryName NVARCHAR(50)
-	,ProductSubcategoryDescription NVARCHAR(100)
-	,FullDateLabel NVARCHAR(20)
-	,CalendarYear INT
-	,CalendarQuarterLabel NVARCHAR(20)
-	,CalendarMonthLabel NVARCHAR(20)
-	,CalendarWeekLabel NVARCHAR(20)
-	,CalendarDayOfWeekLabel NVARCHAR(10)
-	,IsHoliday INT
-	,HolidayName NVARCHAR(20)
-	,NorthAmericaSeason NVARCHAR(50)
-	,CityName NVARCHAR(100)
-	,StateProvinceName NVARCHAR(100)
-	,RegionCountryName NVARCHAR(100)
-	,ContinentName NVARCHAR(50)
-)
 
-
-CREATE TABLE ContosoRetailDW.dbo.Models
-(
-	Model_ID INT IDENTITY(1,1) NOT NULL 
-	,Model VARBINARY(MAX) NOT NULL
-	,DateCreated DATETIME DEFAULT GETDATE()
-);

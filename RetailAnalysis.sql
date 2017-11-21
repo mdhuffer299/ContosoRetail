@@ -44,6 +44,26 @@ EXECUTE spRetailRules @InputQuery =
 SELECT * FROM ContosoRetailDW.dbo.RetailRulesOutput;
 
 /*
+Decision Tree Regression Model for predicting Inventory
+
+	Step 1: Execute the create script for ContosoRetailDW.dbo.RetailInventoryData located in the ContosoRetailTable.sql file.
+	Step 2: Execute the create script for ContosoRetailDW.dbo.Models located in the ContosoRetailTable.sql file.
+	Step 3: Execute the script to create the stored procedure spRetailInventoryDataLoad located in the ContosoRetailInventory.sql file.
+	Step 4: Execute the script to create the stored procedure spGenerateInventoryModel located in the ContosoInventoryModelSP script.
+	Step 5: Execute the script to create the stored procedure spPredictInventory located in the PredictInventorySP script.
+	Step 6: Execute the below lines to load the data and run the Decision Tree Regression model
+*/
+
+EXECUTE spRetailInventoryDataLoad;
+
+EXECUTE spGenerateInventoryModel;
+
+EXECUTE spPredictInventory;
+
+
+
+
+/*
 Making sure stores have the enough of the right products, based on sales and qunatity on hand 
 (To model the inventory count or sales revenue, would need to look at a continuous distribution)
 
@@ -57,6 +77,3 @@ Focus on Sales and Inventory Facts
 --Still working on this
 EXECUTE spRetailSalesDataLoad;
 
-EXECUTE spRetailInventoryDataLoad;
-
-EXECUTE spGenerateInventoryModel;
