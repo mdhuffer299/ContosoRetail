@@ -3,12 +3,12 @@ GO
 
 CREATE OR ALTER PROCEDURE spPredictInventory
 AS
-DECLARE @Model VARBINARY(MAX) = (SELECT Model FROM ContosoRetailDW.dbo.Models WHERE ModelName = 'Default Model');
+DECLARE @Model VARBINARY(MAX) = (SELECT Model FROM Models WHERE ModelName = 'Default Model');
 BEGIN
 EXECUTE SP_EXECUTE_EXTERNAL_SCRIPT
 	@language = N'R'
 	,@script = 
-		N'Model <- unserialize(as.raw(Model))
+		N'Model <- rxUnserializeModel(Model)
 		InventoryPredictData <- data.frame(RetailInventoryData)
 		InventoryPredictData <- rxFactors(InventoryPredictData, factorInfo = c("StoreType","ProductName","ClassName","CalendarMonthLabel","NorthAmericaSeason","CityName"), sortLevels = TRUE)
 		pred <- rxPredict(Model, data = InventoryPredictData)

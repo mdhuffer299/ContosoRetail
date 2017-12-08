@@ -2,6 +2,9 @@ USE ContosoRetailDW;
 GO
 
 --Execute the following Scripts for Apiori Associative Rules Model
+IF OBJECT_ID('ContosoRetailDW.dbo.RetailRulesOutput', 'U') IS NOT NULL
+DROP TABLE ContosoRetailDW.dbo.RetailRulesOutput
+
 CREATE TABLE ContosoRetailDW.dbo.RetailRulesOutput
 (
 	Rules NVARCHAR(MAX)
@@ -10,6 +13,9 @@ CREATE TABLE ContosoRetailDW.dbo.RetailRulesOutput
 	,Lift FLOAT
 	,Count INT
 )
+
+IF OBJECT_ID('ContosoRetailDW.dbo.ProductRulesData', 'U') IS NOT NULL
+DROP TABLE ContosoRetailDW.dbo.ProductRulesData
 
 CREATE TABLE ContosoRetailDW.dbo.ProductRulesData
 (
@@ -27,6 +33,9 @@ CREATE TABLE ContosoRetailDW.dbo.ProductRulesData
 )
 
 --Tables for Decision Tree Regression Model
+IF OBJECT_ID('ContosoRetailDW.dbo.RetailInventoryData', 'U') IS NOT NULL
+DROP TABLE ContosoRetailDW.dbo.RetailInventoryData
+
 CREATE TABLE ContosoRetailDW.dbo.RetailInventoryData
 (
 	InventoryKey INT NOT NULL
@@ -72,6 +81,8 @@ CREATE TABLE ContosoRetailDW.dbo.RetailInventoryData
 	,ContinentName NVARCHAR(50)
 )
 
+IF OBJECT_ID('ContosoRetailDW.dbo.Models', 'U') IS NOT NULL
+DROP TABLE ContosoRetailDW.dbo.Models
 
 CREATE TABLE ContosoRetailDW.dbo.Models
 (
@@ -86,12 +97,15 @@ CREATE TABLE ContosoRetailDW.dbo.Models
 
 
 --Tables for Regression Model: Still working on
+IF OBJECT_ID('ContosoRetailDW.dbo.RetailSalesData', 'U') IS NOT NULL
+DROP TABLE ContosoRetailDW.dbo.RetailSalesData
+
 CREATE TABLE ContosoRetailDW.dbo.RetailSalesData
 (
 	SalesKey INT NOT NULL
 	,StoreKey INT NOT NULL
 	,ProductKey INT NOT NULL
-	,Datekey DATETIME NOT NULL
+	,Datekey INT NOT NULL
 	,ProductCategoryKey INT NOT NULL
 	,ProductSubcategoryKey INT NOT NULL
 	,ChannelKey INT NOT NULL
@@ -106,6 +120,7 @@ CREATE TABLE ContosoRetailDW.dbo.RetailSalesData
 	,DiscountAmount MONEY
 	,TotalCost MONEY
 	,SalesAmount MONEY
+	,Profit MONEY
 	,StoreType NVARCHAR(15)
 	,StoreName NVARCHAR(100)
 	,StoreDescription NVARCHAR(300)
@@ -144,4 +159,76 @@ CREATE TABLE ContosoRetailDW.dbo.RetailSalesData
 	,PromotionCategory NVARCHAR(50)
 )
 
+IF OBJECT_ID('ContosoRetailDW.dbo.QuantityData', 'U') IS NOT NULL
+DROP TABLE ContosoRetailDW.dbo.QuantityData
 
+CREATE TABLE ContosoRetailDW.dbo.QuantityData
+(
+	QuantityMeasure NVARCHAR(30)
+	,StoreType NVARCHAR(15)
+	,ProductName NVARCHAR(500)
+	,ClassName NVARCHAR(20)
+	,CalendarMonthLabel NVARCHAR(20)
+	,NorthAmericaSeason NVARCHAR(50)
+	,CityName NVARCHAR(100)
+)
+
+IF OBJECT_ID('ContosoRetailDW.dbo.RetailPrice', 'U') IS NOT NULL
+DROP TABLE ContosoRetailDW.dbo.RetailPrice
+
+CREATE TABLE ContosoRetailDW.dbo.RetailPrice
+(
+	FullDate INT
+	,TotalCost INT
+	,SalesAmount INT
+	,Profit INT
+	,StoreType NVARCHAR(15)
+	,StoreName NVARCHAR(100)
+	,ProductName NVARCHAR(500)
+	,ColorName NVARCHAR(100)
+	,NorthAmericaSeason NVARCHAR(50)
+	,HolidaySeason NVARCHAR(20)
+	,ProductSubcategoryName NVARCHAR(50)
+	,ProductCategoryName NVARCHAR(50)
+	,CityName NVARCHAR(100)
+	,PromotionName NVARCHAR(100)
+	,DiscountPercent FLOAT
+	,PromotionType NVARCHAR(50)
+)
+
+IF OBJECT_ID('ContosoRetailDW.dbo.ProfitPredict', 'U') IS NOT NULL
+DROP TABLE ContosoRetailDW.dbo.ProfitPredict
+
+CREATE TABLE ContosoRetailDW.dbo.ProfitPredict
+(
+	FullDate INT
+	,TotalCost INT
+	,StoreType NVARCHAR(15)
+	,StoreName NVARCHAR(100)
+	,ColorName NVARCHAR(100)
+	,NorthAmericaSeason NVARCHAR(50)
+	,ProductSubcategoryName NVARCHAR(50)
+	,ActualProfit INT
+	,PredictedProfit FLOAT
+)
+
+IF OBJECT_ID('ContosoRetailDW.dbo.UnitPricePredict', 'U') IS NOT NULL
+DROP TABLE ContosoRetailDW.dbo.UnitPricePredict
+
+CREATE TABLE ContosoRetailDW.dbo.UnitPricePredict
+(
+	UnitCost MONEY
+	,SalesQuantity INT
+	,StoreType NVARCHAR(15)
+	,EmployeeCount INT
+	,BrandName NVARCHAR(50)
+	,ClassName NVARCHAR(20)
+	,ColorName NVARCHAR(20)
+	,CalendarDayOfWeekLabel NVARCHAR(10)
+	,CalendarMonthLabel NVARCHAR(20)
+	,NorthAmericaSeason NVARCHAR(50)
+	,ProductSubcategoryName NVARCHAR(50)
+	,CityName NVARCHAR(100)
+	,ActualUnitPrice MONEY
+	,PredictUnitPrice FLOAT
+)

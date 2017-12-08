@@ -56,24 +56,94 @@ Decision Tree Regression Model for predicting Inventory
 
 EXECUTE spRetailInventoryDataLoad;
 
-EXECUTE spGenerateInventoryModel;
+EXECUTE spGenerateModel
+@SCRIPT = N'  
+		RetailInventoryData <- rxFactors(RetailInventoryData, factorInfo = c("StoreType","ProductName","ClassName","CalendarMonthLabel","NorthAmericaSeason","CityName"), sortLevels = TRUE)
+		model.dtree <- rxDTree(OnHandQuantity ~ StoreType + ProductName + ClassName + CalendarMonthLabel + NorthAmericaSeason + CityName, data = RetailInventoryData)
+		TrainedModel <- data.frame(rxSerializeModel(model.dtree));'
+,@InputData = N'
+		SELECT TOP 100000
+			OnHandQuantity
+			,StoreType
+			,ProductName
+			,ClassName
+			,CalendarMonthLabel
+			,NorthAmericaSeason
+			,CityName
+		FROM
+			ContosoRetailDW.dbo.RetailInventoryData'
+,@InputDataName = N'RetailInventoryData'
+,@OutputDataName = N'TrainedModel';
 
 EXECUTE spPredictInventory;
 
 
+--Predict PROFIT
+EXECUTE spRetailPriceLoad;
 
 
-/*
-Making sure stores have the enough of the right products, based on sales and qunatity on hand 
-(To model the inventory count or sales revenue, would need to look at a continuous distribution)
+--Generate the Model for Predicting Profit based on data from the RetailPrice Dataset
+EXECUTE spGenerateModel
+@Script =
+	N'
+	model <- rxLinMod(Profit ~ FullDate + TotalCost + StoreType + StoreName + ColorName + NorthAmericaSeason + ProductSubcategoryName, data = TrainData)
+	TrainedModel <- data.frame(rxSerializeModel(model))'
+,@InputData =
+	N'
+	SELECT
+		FullDate
+		,TotalCost
+		,SalesAmount
+		,Profit
+		,StoreType
+		,StoreName
+		,ColorName
+		,NorthAmericaSeason
+		,HolidaySeason
+		,ProductCategoryName
+		,ProductSubcategoryName
+		,CityName
+		,PromotionName
+		,DiscountPercent
+		,PromotionType
+	FROM RetailPrice
+	WHERE FullDate < 20090101'
+,@InputDataName = N'TrainData'
+,@OutputDataName = N'TrainedModel';
 
-If we want to model the number of events? (Possible Possion model for count of inventory, count of Sales)
-Big events occuring require special distribution of goods (Christmas, Sporting events, Concerts, etc...)
-Location inforamtion may drive the purchase of particular items.
+EXECUTE spPredictProfit;
 
-Look at Channel, Customer, Geo, Product, Promotion, Scenario, Store Dims
-Focus on Sales and Inventory Facts
-*/
---Still working on this
+--Predict UnitPrice
 EXECUTE spRetailSalesDataLoad;
 
+--Generates the Trained Model that predicts UnitPrice from the RetailSales Dataset
+EXECUTE spGenerateModel
+@Script =
+	N'model.LinMod <- rxLinMod(UnitPrice ~ UnitCost + SalesQuantity + StoreType + EmployeeCount + BrandName + ColorName + CalendarDayOfWeekLabel + CalendarMonthLabel + NorthAmericaSeason + ProductSubcategoryName + CityName, data = TrainData)
+	TrainedModel <- data.frame(rxSerializeModel(model.LinMod))' 
+,@InputData = 
+	N'SELECT
+      UnitCost
+      ,UnitPrice
+      ,SalesQuantity
+      ,StoreType
+      ,EmployeeCount
+      ,BrandName
+      ,ColorName
+      ,CalendarDayOfWeekLabel
+      ,CalendarMonthLabel
+      ,NorthAmericaSeason
+      ,ProductSubcategoryName
+      ,CityName
+	FROM ContosoRetailDW.dbo.RetailSalesData
+	WHERE DateKey < 20090101'
+,@InputDataName = N'TrainData'
+,@OutputDataName = N'TrainedModel';
+
+EXECUTE spPredictUnitPrice;
+
+SELECT
+	ActualUnitPrice
+	,PredictUnitPrice
+	,ActualUnitPrice - PredictUnitPrice AS Diff	
+FROM UnitPricePredict;
