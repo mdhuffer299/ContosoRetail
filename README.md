@@ -28,16 +28,22 @@ Execute the script to create the stored procedure spRetailRules located in the R
 Step 8:
 Execute the below lines to load the data and run the Apriori associative rules model.
 
-Decision Tree Regression Model for predicting Inventory
+For other predictive models, follow the following steps:
 
-Step 1: Execute the create script for ContosoRetailDW.dbo.RetailInventoryData located in the ContosoRetailTable.sql file.
+Step 1: Execute the create table scripts for RetailInventoryData, Models, RetailSalesData, QuantityData, RetailPrice, ProfitPredict, and UnitPricePredict located in the ContosoRetailTable.sql file.
 
-Step 2: Execute the create script for ContosoRetailDW.dbo.Models located in the ContosoRetailTable.sql file.
+Step 2: Execute the script to create the stored procedure spRetailInventoryDataLoad located in the ContosoRetailInventorySP.sql file.
 
-Step 3: Execute the script to create the stored procedure spRetailInventoryDataLoad located in the ContosoRetailInventory.sql file.
+Step 3: Execute the script to create the stored procedure spRetailPriceLoad located in the RetailPriceSP.sql file.
 
-Step 4: Execute the script to create the stored procedure spGenerateInventoryModel located in the ContosoInventoryModelSP script.
+Step 4: Execute the script to create the stored procedure spRetailSalesDataLoad located in the ContosoRetailSalesSP.sql file.
 
-Step 5: Execute the script to create the stored procedure spPredictInventory located in the PredictInventorySP script.
+Step 5: Execute the script to create the stored procedure spGenerateModel located in the GenerateModelSP script.
 
-Step 6: Execute the below lines to load the data and run the Decision Tree Regression model
+Step 6: Execute the script to create the stored procedure spPredictInventory located in the PredictInventorySP script.
+
+Step 7: Execute the script to create the stored procedure spPredictProfit located in the PredictProfitSP script.
+
+Step 8: Execute the script to create the stored procedure spPredictUnitPrice located in the PredictUnitPriceSP script.
+
+Step 9: Execute the sections of code to load the data, run each respective model, create the predictions, and querry the prediction results.
