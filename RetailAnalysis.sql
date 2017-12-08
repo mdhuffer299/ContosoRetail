@@ -43,19 +43,16 @@ EXECUTE spRetailRules @InputQuery =
 --Run to view the results of the Apriori Model
 SELECT * FROM ContosoRetailDW.dbo.RetailRulesOutput;
 
-/*
-Decision Tree Regression Model for predicting Inventory
 
-	Step 1: Execute the create script for ContosoRetailDW.dbo.RetailInventoryData located in the ContosoRetailTable.sql file.
-	Step 2: Execute the create script for ContosoRetailDW.dbo.Models located in the ContosoRetailTable.sql file.
-	Step 3: Execute the script to create the stored procedure spRetailInventoryDataLoad located in the ContosoRetailInventory.sql file.
-	Step 4: Execute the script to create the stored procedure spGenerateInventoryModel located in the ContosoInventoryModelSP script.
-	Step 5: Execute the script to create the stored procedure spPredictInventory located in the PredictInventorySP script.
-	Step 6: Execute the below lines to load the data and run the Decision Tree Regression model
-*/
+
+
+
+/*******************************Decision Tree Regression Model for predicting Inventory **********************************/
 
 EXECUTE spRetailInventoryDataLoad;
 
+
+--Execute to generate and store the trained model.
 EXECUTE spGenerateModel
 @SCRIPT = N'  
 		RetailInventoryData <- rxFactors(RetailInventoryData, factorInfo = c("StoreType","ProductName","ClassName","CalendarMonthLabel","NorthAmericaSeason","CityName"), sortLevels = TRUE)
@@ -75,10 +72,16 @@ EXECUTE spGenerateModel
 ,@InputDataName = N'RetailInventoryData'
 ,@OutputDataName = N'TrainedModel';
 
+
+--Execute to produce a result set showing the predicted quantity on hand as well as the features values that were fed into the model.
 EXECUTE spPredictInventory;
 
 
---Predict PROFIT
+
+
+
+
+/************************************************** Predict PROFIT section *********************************************************/
 EXECUTE spRetailPriceLoad;
 
 
@@ -111,9 +114,30 @@ EXECUTE spGenerateModel
 ,@InputDataName = N'TrainData'
 ,@OutputDataName = N'TrainedModel';
 
+
+--Execute the stored procedure to store the prediction results.
 EXECUTE spPredictProfit;
 
---Predict UnitPrice
+--Verify that the results have been stored.
+SELECT TOP 10
+	FullDate
+	,TotalCost
+	,StoreType
+	,StoreName
+	,ColorName
+	,NorthAmericaSeason
+	,ProductSubcategoryName
+	,ActualProfit
+	,PredictedProfit 
+FROM
+	ContosoRetailDW.dbo.ProfitPredict
+
+
+
+
+
+
+/****************************************** Predict UnitPrice Section ****************************************************/
 EXECUTE spRetailSalesDataLoad;
 
 --Generates the Trained Model that predicts UnitPrice from the RetailSales Dataset
@@ -140,8 +164,12 @@ EXECUTE spGenerateModel
 ,@InputDataName = N'TrainData'
 ,@OutputDataName = N'TrainedModel';
 
+
+--Execute the stored procedure to store the prediction results.
 EXECUTE spPredictUnitPrice;
 
+
+--Verify the predictions have been stored in the UnitPricePredict table.
 SELECT
 	ActualUnitPrice
 	,PredictUnitPrice
