@@ -1,5 +1,5 @@
 # ContosoRetail
-Repo for Contoso Retail DW scripts.
+# Repo for Contoso Retail DW scripts.
 
 Step 1: 
 Restore ContosoRetailDW from .BAK file.
@@ -28,7 +28,7 @@ Execute the script to create the stored procedure spRetailRules located in the R
 Step 8:
 Execute the below lines to load the data and run the Apriori associative rules model.
 
-For other predictive models, follow the following steps:
+# For other predictive models, follow the following steps:
 
 Step 1: Execute the create table scripts for RetailInventoryData, Models, RetailSalesData, QuantityData, RetailPrice, ProfitPredict, and UnitPricePredict located in the ContosoRetailTable.sql file.
 
